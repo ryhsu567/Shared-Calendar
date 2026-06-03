@@ -15,6 +15,7 @@
             --blue: #2563EB; --blue-bg: #EFF4FF; --blue-text: #1E40AF;
             --pink: #DB2777; --pink-bg: #FDF2F8; --pink-text: #9D174D;
             --amber: #D97706; --amber-bg: #FFFBEB; --amber-text: #92400E;
+            --purple: #7C3AED; --purple-bg: #F5F3FF; --purple-text: #4C1D95; --purple-border: #C4B5FD;
             --today-bg: #1A1916; --today-text: #FFFFFF;
             --radius: 10px; --radius-lg: 14px;
             --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
@@ -73,11 +74,10 @@
         .trip-history { max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
         .trip-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; background: var(--surface2); border-radius: var(--radius); border: 1px solid var(--border); transition: border-color 0.15s; }
         .trip-item:hover { border-color: var(--border-strong); }
-        .trip-item-bar { width: 3px; height: 36px; border-radius: 2px; flex-shrink: 0; }
-        .trip-item-bar.ryan { background: var(--blue); } .trip-item-bar.hannah { background: var(--pink); }
+        .trip-item-bar.ryan { background: var(--blue); } .trip-item-bar.hannah { background: var(--pink); } .trip-item-bar.both { background: var(--purple); }
         .trip-item-info { flex: 1; min-width: 0; }
         .trip-item-person { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
-        .trip-item-person.ryan { color: var(--blue-text); } .trip-item-person.hannah { color: var(--pink-text); }
+        .trip-item-person.ryan { color: var(--blue-text); } .trip-item-person.hannah { color: var(--pink-text); } .trip-item-person.both { color: var(--purple-text); }
         .trip-item-loc { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .trip-item-dates { font-size: 11px; color: var(--text-3); margin-top: 1px; }
         .trip-delete { background: none; border: none; cursor: pointer; color: var(--text-3); font-size: 16px; line-height: 1; padding: 4px; border-radius: 6px; transition: all 0.15s; flex-shrink: 0; }
@@ -100,9 +100,23 @@
         .cal-day.today .day-num { background: var(--today-bg); color: var(--today-text); }
         .pills { display: flex; flex-direction: column; gap: 3px; }
         .pill { font-size: 10px; font-weight: 600; padding: 3px 7px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .trip-item-bar { width: 3px; height: 36px; border-radius: 2px; flex-shrink: 0; }
         .pill.ryan { background: var(--blue-bg); color: var(--blue-text); }
         .pill.hannah { background: var(--pink-bg); color: var(--pink-text); }
         .pill.overlap { background: var(--amber-bg); color: var(--amber-text); }
+        .pill.both { background: var(--purple-bg); color: var(--purple-text); }
+        .popup-trip.both { background: var(--purple-bg); }
+        .popup-trip-person.both { color: var(--purple-text); }
+        /* Joint trip toggle row variant */
+        .joint-row { background: var(--purple-bg); border-color: var(--purple-border); }
+        .joint-row .toggle-label { color: var(--purple-text); }
+        /* Collapsible history */
+        .history-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+        .history-header:hover .chevron { color: var(--text); }
+        .chevron { font-size: 12px; color: var(--text-3); transition: transform 0.2s; display: inline-block; }
+        .chevron.open { transform: rotate(180deg); }
+        .trip-history { max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+        .trip-history.hidden { display: none; }
         .day-popup { display: none; position: absolute; z-index: 200; top: 100%; left: 0; background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 12px 14px; min-width: 210px; max-width: 240px; max-height: 260px; overflow-y: auto; }
         .day-popup.flip-up { top: auto; bottom: 100%; }
         .cal-day:hover .day-popup { display: block; }
@@ -165,6 +179,13 @@
                         <span class="toggle-slider"></span>
                     </span>
                 </label>
+                <label class="toggle-row" id="jointRow" for="isJoint">
+                    <span class="toggle-label">Joint trip</span>
+                    <span class="toggle-switch">
+                        <input type="checkbox" id="isJoint" onchange="toggleJoint()">
+                        <span class="toggle-slider"></span>
+                    </span>
+                </label>
                 <div class="date-row" id="dateRow">
                     <div class="form-group" style="margin-bottom:0">
                         <label class="form-label" id="startLabel" for="tripStart">Start date</label>
@@ -184,6 +205,7 @@
                 <div class="legend">
                     <div class="legend-item"><span class="legend-swatch" style="background:var(--blue-bg);border:1.5px solid #BFDBFE"></span>Ryan's trips</div>
                     <div class="legend-item"><span class="legend-swatch" style="background:var(--pink-bg);border:1.5px solid #FBCFE8"></span>Hannah's trips</div>
+                    <div class="legend-item"><span class="legend-swatch" style="background:var(--purple-bg);border:1.5px solid var(--purple-border)"></span>Joint trips</div>
                     <div class="legend-item">
                         <span style="width:24px;height:24px;border-radius:50%;background:var(--today-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0">
                             <span style="font-size:10px;font-weight:600;color:white;font-family:'DM Mono',monospace">8</span>
@@ -194,8 +216,11 @@
             </div>
 
             <div class="card">
-                <div class="card-title">History <span id="historyCount" style="font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-3)"></span></div>
-                <div class="trip-history" id="tripList">
+                <div class="history-header" onclick="toggleHistory()">
+                    <div class="card-title" style="margin-bottom:0">History <span id="historyCount" style="font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-3)"></span></div>
+                    <span class="chevron" id="historyChevron">▼</span>
+                </div>
+                <div class="trip-history hidden" id="tripList">
                     <div class="empty-state">No trips logged yet.</div>
                 </div>
             </div>
@@ -262,6 +287,26 @@ function fmtFull(str) {
 function daysBetween(a, b) { return Math.round((b - a) / 86400000) + 1; }
 function daysUntil(str)    { return Math.round((localDate(str) - TODAY) / 86400000); }
 
+window.toggleJoint = function() {
+    const joint = document.getElementById('isJoint').checked;
+    const row   = document.getElementById('jointRow');
+    const btnRyan = document.getElementById('btnRyan');
+    const btnHannah = document.getElementById('btnHannah');
+    row.classList.toggle('joint-row', joint);
+    // Dim person buttons when joint — person selection irrelevant
+    btnRyan.style.opacity    = joint ? '0.4' : '1';
+    btnHannah.style.opacity  = joint ? '0.4' : '1';
+    btnRyan.style.pointerEvents   = joint ? 'none' : '';
+    btnHannah.style.pointerEvents = joint ? 'none' : '';
+};
+
+window.toggleHistory = function() {
+    const list    = document.getElementById('tripList');
+    const chevron = document.getElementById('historyChevron');
+    const hidden  = list.classList.toggle('hidden');
+    chevron.classList.toggle('open', !hidden);
+};
+
 // ── Overlap map ────────────────────────────────────────────────────────
 function getOverlapDays() {
     const ryanDays = new Set(), hannahDays = new Set();
@@ -270,7 +315,10 @@ function getOverlapDays() {
         const cur = new Date(startDate);
         while (cur <= endDate) {
             const key = cur.toISOString().slice(0,10);
-            (t.person === 'Ryan' ? ryanDays : hannahDays).add(key);
+            // Joint trips count for both
+            if (t.person === 'Both') { ryanDays.add(key); hannahDays.add(key); }
+            else if (t.person === 'Ryan') ryanDays.add(key);
+            else hannahDays.add(key);
             cur.setDate(cur.getDate() + 1);
         }
     });
@@ -325,6 +373,7 @@ window.addTrip = async function() {
     const loc    = document.getElementById('tripLocation').value.trim();
     const start  = document.getElementById('tripStart').value;
     const single = document.getElementById('isSingleDay').checked;
+    const joint  = document.getElementById('isJoint').checked;
     const end    = single ? start : document.getElementById('tripEnd').value;
 
     const locErr  = !loc;
@@ -335,13 +384,16 @@ window.addTrip = async function() {
 
     try {
         await addDoc(collection(db, 'trips'), {
-            person: selectedPerson, location: loc,
-            start, end, isSingle: single, createdAt: Date.now()
+            person: joint ? 'Both' : selectedPerson,
+            location: loc, start, end, isSingle: single, createdAt: Date.now()
         });
         document.getElementById('tripLocation').value = '';
         const todayStr = TODAY.toISOString().slice(0,10);
         document.getElementById('tripStart').value = todayStr;
         document.getElementById('tripEnd').value   = todayStr;
+        // Reset joint toggle
+        document.getElementById('isJoint').checked = false;
+        window.toggleJoint();
         document.getElementById('locError').classList.remove('show');
         document.getElementById('dateError').classList.remove('show');
         showToast('Trip saved!', false);
@@ -375,10 +427,10 @@ window.undoDelete = async function() {
 // ── Render: stats ──────────────────────────────────────────────────────
 function renderStats() {
     const { ryanDays, hannahDays } = getOverlapDays();
-    const ryanTrips   = trips.filter(t => t.person === 'Ryan').length;
-    const hannahTrips = trips.filter(t => t.person === 'Hannah').length;
+    // Joint trips count toward both
+    const ryanTrips   = trips.filter(t => t.person === 'Ryan' || t.person === 'Both').length;
+    const hannahTrips = trips.filter(t => t.person === 'Hannah' || t.person === 'Both').length;
 
-    // FIX: use viewDate's month so stat label and values move with calendar navigation
     const vy  = viewDate.getFullYear();
     const vm  = viewDate.getMonth();
     const dim = new Date(vy, vm + 1, 0).getDate();
@@ -397,7 +449,7 @@ function renderStats() {
     let nextHtml, nextSub;
     if (next) {
         const du    = daysUntil(next.start);
-        const color = next.person === 'Ryan' ? 'var(--blue)' : 'var(--pink)';
+        const color = next.person === 'Ryan' ? 'var(--blue)' : next.person === 'Hannah' ? 'var(--pink)' : 'var(--purple)';
         nextHtml = `<div class="stat-value" style="color:${color};font-size:20px;line-height:1.2">${du === 0 ? 'Today' : du + 'd'}</div>`;
         nextSub  = `${next.person} · ${next.location}`;
     } else {
@@ -432,12 +484,14 @@ function renderTripList() {
     count.textContent = trips.length + ' total';
     const sorted = [...trips].sort((a,b) => new Date(b.start) - new Date(a.start));
     list.innerHTML = sorted.map(t => {
-        const dur = daysBetween(localDate(t.start), localDate(t.end));
+        const dur     = daysBetween(localDate(t.start), localDate(t.end));
+        const cls     = t.person === 'Both' ? 'both' : t.person.toLowerCase();
+        const label   = t.person === 'Both' ? 'Joint' : t.person;
         return `
             <div class="trip-item">
-                <div class="trip-item-bar ${t.person.toLowerCase()}"></div>
+                <div class="trip-item-bar ${cls}"></div>
                 <div class="trip-item-info">
-                    <div class="trip-item-person ${t.person.toLowerCase()}">${t.person}</div>
+                    <div class="trip-item-person ${cls}">${label}</div>
                     <div class="trip-item-loc">${t.location}</div>
                     <div class="trip-item-dates">${fmt(t.start)}${t.isSingle ? '' : ' – ' + fmt(t.end)} · ${dur}d</div>
                 </div>
@@ -492,9 +546,18 @@ function renderCalendar() {
         if (hasRyan && hasHannah) cls += ' has-overlap';
 
         let pillsHtml = '';
-        if (hasRyan && hasHannah) {
-            const rLoc = active.find(t => t.person === 'Ryan')?.location    || '';
-            const hLoc = active.find(t => t.person === 'Hannah')?.location  || '';
+        const jointTrips = active.filter(t => t.person === 'Both');
+        if (jointTrips.length) {
+            jointTrips.forEach(t => {
+                pillsHtml += `<div class="pill both">✦ ${t.location}</div>`;
+            });
+            // Also show any non-joint trips on same day
+            active.filter(t => t.person !== 'Both').forEach(t => {
+                pillsHtml += `<div class="pill ${t.person === 'Ryan' ? 'ryan' : 'hannah'}">${t.location}</div>`;
+            });
+        } else if (hasRyan && hasHannah) {
+            const rLoc = active.find(t => t.person === 'Ryan')?.location   || '';
+            const hLoc = active.find(t => t.person === 'Hannah')?.location || '';
             pillsHtml = `<div class="pill overlap">Both away</div>`;
             if (rLoc !== hLoc) pillsHtml += `
                 <div class="pill ryan" style="font-size:9px;opacity:.8">${rLoc}</div>
@@ -505,17 +568,17 @@ function renderCalendar() {
             });
         }
 
-        // Flip popup upward for days in the last 2 rows so it never gets clipped
         const flipUp = cellRow >= totalRows - 1;
 
         let popupHtml = '';
         if (active.length) {
             popupHtml = `<div class="day-popup${flipUp ? ' flip-up' : ''}"><div class="popup-date">${fmtFull(key)}</div>`;
             active.forEach(t => {
-                const c = t.person.toLowerCase();
+                const c = t.person === 'Both' ? 'both' : t.person.toLowerCase();
+                const label = t.person === 'Both' ? 'Joint trip' : t.person;
                 popupHtml += `
                     <div class="popup-trip ${c}">
-                        <div class="popup-trip-person ${c}">${t.person}</div>
+                        <div class="popup-trip-person ${c}">${label}</div>
                         <div class="popup-trip-loc">${t.location}</div>
                         <div class="popup-trip-dates">${fmt(t.start)}${t.isSingle ? '' : ' – ' + fmt(t.end)}</div>
                     </div>`;
