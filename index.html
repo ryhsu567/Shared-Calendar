@@ -663,7 +663,12 @@ function renderTripList() {
         count.textContent = ''; return;
     }
     count.textContent = trips.length + ' total';
-    const sorted = [...trips].sort((a,b) => new Date(b.start) - new Date(a.start));
+
+    // Sort by when the trip was entered, newest first.
+    // Falls back to the start date for any doc saved before createdAt existed.
+    const enteredAt = t => t.createdAt ?? localDate(t.start).getTime();
+    const sorted    = [...trips].sort((a, b) => enteredAt(b) - enteredAt(a));
+
     list.innerHTML = sorted.map(t => {
         const dur   = daysBetween(localDate(t.start), localDate(t.end));
         const cls   = t.person === 'Both' ? 'both' : t.person.toLowerCase();
