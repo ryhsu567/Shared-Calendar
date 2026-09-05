@@ -16,10 +16,12 @@
             --pink: #DB2777; --pink-bg: #FDF2F8; --pink-text: #9D174D;
             --amber: #D97706; --amber-bg: #FFFBEB; --amber-text: #92400E;
             --purple: #7C3AED; --purple-bg: #F5F3FF; --purple-text: #4C1D95; --purple-border: #C4B5FD;
+            --danger: #DC2626; --danger-bg: #FEF2F2;
             --today-bg: #1A1916; --today-text: #FFFFFF;
             --radius: 10px; --radius-lg: 14px;
             --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
             --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.16), 0 4px 12px rgba(0,0,0,0.08);
         }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 24px; font-size: 14px; line-height: 1.5; }
         .app { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
@@ -52,12 +54,13 @@
         .form-input { width: 100%; padding: 9px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; transition: border-color 0.15s; min-width: 0; }
         .form-input:focus { border-color: var(--border-strong); box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
         .form-input::placeholder { color: var(--text-3); }
-        /* FIX 1: stack date fields vertically so end date never overflows */
         .date-row { display: flex; flex-direction: column; gap: 10px; }
         .person-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; }
+        .person-toggle.three { grid-template-columns: 1fr 1fr 1fr; }
         .person-btn { padding: 9px; border-radius: var(--radius); font-size: 12px; font-weight: 600; border: 1.5px solid var(--border); background: var(--surface2); cursor: pointer; transition: all 0.15s; color: var(--text-3); font-family: 'DM Sans', sans-serif; }
         .person-btn.active-ryan { border-color: var(--blue); background: var(--blue-bg); color: var(--blue-text); }
         .person-btn.active-hannah { border-color: var(--pink); background: var(--pink-bg); color: var(--pink-text); }
+        .person-btn.active-both { border-color: var(--purple); background: var(--purple-bg); color: var(--purple-text); }
         .toggle-row { display: flex; align-items: center; justify-content: space-between; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 12px; margin-bottom: 12px; cursor: pointer; }
         .toggle-label { font-size: 12px; font-weight: 500; color: var(--text-2); }
         .toggle-switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
@@ -69,10 +72,11 @@
         .btn-primary { width: 100%; padding: 11px; background: var(--text); color: white; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.15s, transform 0.1s; margin-top: 4px; }
         .btn-primary:hover { background: #333; }
         .btn-primary:active { transform: scale(0.99); }
+        .btn-danger { padding: 11px 16px; background: var(--danger-bg); color: var(--danger); border: 1px solid #FECACA; border-radius: var(--radius); font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+        .btn-danger:hover { background: var(--danger); color: white; border-color: var(--danger); }
         .form-error { font-size: 11px; color: #dc2626; margin-top: 5px; display: none; }
         .form-error.show { display: block; }
-        .trip-history { max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-        .trip-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; background: var(--surface2); border-radius: var(--radius); border: 1px solid var(--border); transition: border-color 0.15s; }
+        .trip-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; background: var(--surface2); border-radius: var(--radius); border: 1px solid var(--border); transition: border-color 0.15s; cursor: pointer; }
         .trip-item:hover { border-color: var(--border-strong); }
         .trip-item-bar.ryan { background: var(--blue); } .trip-item-bar.hannah { background: var(--pink); } .trip-item-bar.both { background: var(--purple); }
         .trip-item-info { flex: 1; min-width: 0; }
@@ -89,9 +93,9 @@
         .calendar-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: visible; box-shadow: var(--shadow); }
         .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
         .cal-dow { background: var(--surface2); padding: 10px 8px; text-align: center; font-size: 10px; font-weight: 600; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-        .cal-day { min-height: 100px; padding: 8px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface); cursor: pointer; transition: background 0.12s; position: relative; }
+        .cal-day { min-height: 100px; padding: 8px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface); transition: background 0.12s; position: relative; }
         .cal-day:hover { background: var(--surface2); }
-        .cal-day.empty { background: var(--bg); cursor: default; }
+        .cal-day.empty { background: var(--bg); }
         .cal-day.empty:hover { background: var(--bg); }
         .cal-day.has-overlap { background: #FFFCF0; }
         .cal-day.has-overlap:hover { background: #FFF8E1; }
@@ -100,6 +104,10 @@
         .cal-day.today .day-num { background: var(--today-bg); color: var(--today-text); }
         .pills { display: flex; flex-direction: column; gap: 3px; }
         .pill { font-size: 10px; font-weight: 600; padding: 3px 7px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .pill.editable { cursor: pointer; transition: box-shadow 0.12s, transform 0.12s; }
+        .pill.editable:hover { box-shadow: inset 0 0 0 1.5px currentColor; }
+        .pill.editable:active { transform: scale(0.98); }
+        .pill.editable:focus-visible { outline: 2px solid var(--text); outline-offset: 1px; }
         .trip-item-bar { width: 3px; height: 36px; border-radius: 2px; flex-shrink: 0; }
         .pill.ryan { background: var(--blue-bg); color: var(--blue-text); }
         .pill.hannah { background: var(--pink-bg); color: var(--pink-text); }
@@ -107,10 +115,8 @@
         .pill.both { background: var(--purple-bg); color: var(--purple-text); }
         .popup-trip.both { background: var(--purple-bg); }
         .popup-trip-person.both { color: var(--purple-text); }
-        /* Joint trip toggle row variant */
         .joint-row { background: var(--purple-bg); border-color: var(--purple-border); }
         .joint-row .toggle-label { color: var(--purple-text); }
-        /* Collapsible history */
         .history-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
         .history-header:hover .chevron { color: var(--text); }
         .chevron { font-size: 12px; color: var(--text-3); transition: transform 0.2s; display: inline-block; }
@@ -121,13 +127,32 @@
         .day-popup.flip-up { top: auto; bottom: 100%; }
         .cal-day:hover .day-popup { display: block; }
         .popup-date { font-size: 11px; font-weight: 600; color: var(--text-3); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .popup-trip { padding: 7px 9px; border-radius: 7px; margin-bottom: 5px; }
+        .popup-trip { padding: 7px 9px; border-radius: 7px; margin-bottom: 5px; cursor: pointer; border: 1px solid transparent; transition: border-color 0.12s; }
+        .popup-trip:hover { border-color: var(--border-strong); }
         .popup-trip:last-child { margin-bottom: 0; }
         .popup-trip.ryan { background: var(--blue-bg); } .popup-trip.hannah { background: var(--pink-bg); }
         .popup-trip-person { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
         .popup-trip-person.ryan { color: var(--blue-text); } .popup-trip-person.hannah { color: var(--pink-text); }
         .popup-trip-loc { font-size: 13px; font-weight: 500; color: var(--text); margin-top: 1px; }
         .popup-trip-dates { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+        .popup-edit-hint { font-size: 10px; color: var(--text-3); margin-top: 8px; text-align: center; }
+
+        /* ── Edit modal ──────────────────────────────────────────────── */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(26,25,22,0.4); backdrop-filter: blur(2px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; }
+        .modal-overlay.show { display: flex; }
+        .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 22px; width: 100%; max-width: 360px; max-height: 90vh; overflow-y: auto; }
+        .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+        .modal-title { font-size: 15px; font-weight: 600; }
+        .modal-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; font-family: 'DM Mono', monospace; }
+        .modal-close { background: none; border: none; cursor: pointer; color: var(--text-3); font-size: 20px; line-height: 1; padding: 2px 6px; border-radius: 6px; transition: all 0.15s; }
+        .modal-close:hover { background: var(--surface2); color: var(--text); }
+        .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+        .modal-actions .btn-primary { margin-top: 0; }
+        .nudge-row { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+        .nudge-label { font-size: 11px; color: var(--text-3); font-weight: 500; margin-right: 2px; }
+        .nudge-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; font-size: 11px; font-weight: 600; font-family: 'DM Sans', sans-serif; color: var(--text-2); padding: 5px 9px; cursor: pointer; transition: all 0.15s; }
+        .nudge-btn:hover { background: var(--border); color: var(--text); }
+
         #toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: var(--text); color: white; padding: 12px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 500; box-shadow: var(--shadow-md); transform: translateY(20px); opacity: 0; transition: all 0.25s ease; display: flex; align-items: center; gap: 10px; pointer-events: none; }
         #toast.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
         #toast button { background: rgba(255,255,255,0.15); border: none; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 6px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
@@ -170,7 +195,7 @@
                 <div class="form-group">
                     <label class="form-label" for="tripLocation">Destination</label>
                     <input type="text" id="tripLocation" class="form-input" placeholder="e.g. Tokyo, Japan">
-                    <div class="form-error" id="locError">Please enter a destination.</div>
+                    <div class="form-error" id="locError">Enter a destination.</div>
                 </div>
                 <label class="toggle-row" for="isSingleDay">
                     <span class="toggle-label">Single day trip</span>
@@ -196,7 +221,7 @@
                         <input type="date" id="tripEnd" class="form-input">
                     </div>
                 </div>
-                <div class="form-error" id="dateError" style="margin-top:6px">Please enter valid dates (end can't be before start).</div>
+                <div class="form-error" id="dateError" style="margin-top:6px">End date can't be before the start date.</div>
                 <button class="btn-primary" onclick="addTrip()">Log trip</button>
             </div>
 
@@ -208,11 +233,12 @@
                     <div class="legend-item"><span class="legend-swatch" style="background:var(--purple-bg);border:1.5px solid var(--purple-border)"></span>Joint trips</div>
                     <div class="legend-item">
                         <span style="width:24px;height:24px;border-radius:50%;background:var(--today-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <span style="font-size:10px;font-weight:600;color:white;font-family:'DM Mono',monospace">8</span>
+                            <span id="legendToday" style="font-size:10px;font-weight:600;color:white;font-family:'DM Mono',monospace"></span>
                         </span>
                         Today
                     </div>
                 </div>
+                <div style="font-size:11px;color:var(--text-3);margin-top:12px;line-height:1.45">Click any trip on the calendar to change its dates.</div>
             </div>
 
             <div class="card">
@@ -232,6 +258,56 @@
     </div>
 </div>
 
+<!-- ── Edit trip modal ─────────────────────────────────────────────── -->
+<div class="modal-overlay" id="editOverlay" onclick="overlayClick(event)">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+        <div class="modal-head">
+            <div>
+                <div class="modal-title" id="editTitle">Edit trip</div>
+                <div class="modal-sub" id="editSub"></div>
+            </div>
+            <button class="modal-close" onclick="closeEdit()" aria-label="Close">&times;</button>
+        </div>
+        <div class="person-toggle three">
+            <button class="person-btn" id="editBtnRyan" onclick="editSetPerson('Ryan')">Ryan</button>
+            <button class="person-btn" id="editBtnHannah" onclick="editSetPerson('Hannah')">Hannah</button>
+            <button class="person-btn" id="editBtnBoth" onclick="editSetPerson('Both')">Joint</button>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="editLocation">Destination</label>
+            <input type="text" id="editLocation" class="form-input">
+        </div>
+        <label class="toggle-row" for="editSingle">
+            <span class="toggle-label">Single day trip</span>
+            <span class="toggle-switch">
+                <input type="checkbox" id="editSingle" onchange="toggleEditDateMode()">
+                <span class="toggle-slider"></span>
+            </span>
+        </label>
+        <div class="date-row">
+            <div class="form-group" style="margin-bottom:0">
+                <label class="form-label" id="editStartLabel" for="editStart">Start date</label>
+                <input type="date" id="editStart" class="form-input" onchange="refreshEditSub()">
+            </div>
+            <div class="form-group" id="editEndGroup" style="margin-bottom:0">
+                <label class="form-label" for="editEnd">End date</label>
+                <input type="date" id="editEnd" class="form-input" onchange="refreshEditSub()">
+            </div>
+        </div>
+        <div class="nudge-row" id="nudgeRow">
+            <span class="nudge-label">Shift trip</span>
+            <button class="nudge-btn" onclick="shiftTrip(-1)">−1 day</button>
+            <button class="nudge-btn" onclick="shiftTrip(1)">+1 day</button>
+            <button class="nudge-btn" onclick="shiftTrip(7)">+1 week</button>
+        </div>
+        <div class="form-error" id="editError" style="margin-top:0;margin-bottom:4px">Enter a destination and valid dates.</div>
+        <div class="modal-actions">
+            <button class="btn-danger" onclick="deleteFromModal()">Delete</button>
+            <button class="btn-primary" onclick="saveEdit()">Save changes</button>
+        </div>
+    </div>
+</div>
+
 <div id="toast">
     <span id="toastMsg"></span>
     <button id="undoBtn" onclick="undoDelete()">Undo</button>
@@ -239,7 +315,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAkzpDjl42VcYPp5YkQSYVnxLHLq3XkpCw",
@@ -258,12 +334,14 @@ let viewDate       = new Date(); viewDate.setDate(1);
 let selectedPerson = 'Ryan';
 let lastDeleted    = null;
 let toastTimer     = null;
+let editingId      = null;   // id of the trip open in the modal
+let editPerson     = 'Ryan'; // person selected inside the modal
 
 // today fixed at midnight once — never recalculated
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
 
 // ── Date helpers ───────────────────────────────────────────────────────
-// FIX: parse "YYYY-MM-DD" as LOCAL midnight, not UTC (avoids off-by-one day bugs)
+// Parse "YYYY-MM-DD" as LOCAL midnight, not UTC (avoids off-by-one day bugs)
 function localDate(str) {
     const [y, m, d] = str.split('-').map(Number);
     return new Date(y, m - 1, d);
@@ -272,6 +350,14 @@ function localDate(str) {
 // Build "YYYY-MM-DD" key from local year/month/day — no UTC conversion
 function toKey(y, m, d) {
     return `${y}-${String(m + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+function dateToKey(dt) { return toKey(dt.getFullYear(), dt.getMonth(), dt.getDate()); }
+
+// Shift a "YYYY-MM-DD" string by n days, staying in local time
+function addDays(str, n) {
+    const d = localDate(str);
+    d.setDate(d.getDate() + n);
+    return dateToKey(d);
 }
 
 function parseTrip(t) {
@@ -287,13 +373,17 @@ function fmtFull(str) {
 function daysBetween(a, b) { return Math.round((b - a) / 86400000) + 1; }
 function daysUntil(str)    { return Math.round((localDate(str) - TODAY) / 86400000); }
 
+// Escape user text before it goes into innerHTML
+function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 window.toggleJoint = function() {
     const joint = document.getElementById('isJoint').checked;
     const row   = document.getElementById('jointRow');
     const btnRyan = document.getElementById('btnRyan');
     const btnHannah = document.getElementById('btnHannah');
     row.classList.toggle('joint-row', joint);
-    // Dim person buttons when joint — person selection irrelevant
     btnRyan.style.opacity    = joint ? '0.4' : '1';
     btnHannah.style.opacity  = joint ? '0.4' : '1';
     btnRyan.style.pointerEvents   = joint ? 'none' : '';
@@ -314,8 +404,8 @@ function getOverlapDays() {
         const { startDate, endDate } = parseTrip(t);
         const cur = new Date(startDate);
         while (cur <= endDate) {
-            const key = cur.toISOString().slice(0,10);
-            // Joint trips count for both
+            // FIX: local key, matching toKey() used everywhere else (was toISOString → UTC shift)
+            const key = dateToKey(cur);
             if (t.person === 'Both') { ryanDays.add(key); hannahDays.add(key); }
             else if (t.person === 'Ryan') ryanDays.add(key);
             else hannahDays.add(key);
@@ -341,20 +431,11 @@ window.setPerson = function(name) {
 window.changeMonth = function(offset) {
     viewDate.setMonth(viewDate.getMonth() + offset);
     renderCalendar();
-    renderStats(); // FIX: stats re-render so "Away in [month]" updates when navigating
+    renderStats();
 };
 
 window.jumpToToday = function() {
     viewDate = new Date(); viewDate.setDate(1);
-    renderCalendar(); renderStats();
-};
-
-window.jumpToNextTrip = function() {
-    const next = trips.map(parseTrip)
-        .filter(t => t.endDate >= TODAY)
-        .sort((a,b) => a.startDate - b.startDate)[0];
-    if (!next) return showToast('No upcoming trips found.', false);
-    viewDate = new Date(next.startDate.getFullYear(), next.startDate.getMonth(), 1);
     renderCalendar(); renderStats();
 };
 
@@ -388,16 +469,15 @@ window.addTrip = async function() {
             location: loc, start, end, isSingle: single, createdAt: Date.now()
         });
         document.getElementById('tripLocation').value = '';
-        const todayStr = TODAY.toISOString().slice(0,10);
+        const todayStr = dateToKey(TODAY);
         document.getElementById('tripStart').value = todayStr;
         document.getElementById('tripEnd').value   = todayStr;
-        // Reset joint toggle
         document.getElementById('isJoint').checked = false;
         window.toggleJoint();
         document.getElementById('locError').classList.remove('show');
         document.getElementById('dateError').classList.remove('show');
-        showToast('Trip saved!', false);
-    } catch(e) { showToast('Failed to save trip.', false); console.error(e); }
+        showToast('Trip saved.', false);
+    } catch(e) { showToast('Trip didn\u2019t save. Check your connection and try again.', false); console.error(e); }
 };
 
 window.deleteTrip = async function(id) {
@@ -407,7 +487,7 @@ window.deleteTrip = async function(id) {
     try {
         await deleteDoc(doc(db, 'trips', id));
         showToast('Trip deleted.', true);
-    } catch(e) { showToast('Failed to delete.', false); }
+    } catch(e) { showToast('Trip didn\u2019t delete. Try again.', false); console.error(e); }
 };
 
 window.undoDelete = async function() {
@@ -424,10 +504,111 @@ window.undoDelete = async function() {
     } catch(e) { console.error(e); }
 };
 
+// ── Edit modal ─────────────────────────────────────────────────────────
+window.openEdit = function(id) {
+    const t = trips.find(x => x.id === id);
+    if (!t) return;
+    editingId = id;
+
+    document.getElementById('editLocation').value = t.location || '';
+    document.getElementById('editStart').value    = t.start;
+    document.getElementById('editEnd').value      = t.end;
+
+    const single = t.isSingle === true || t.start === t.end;
+    document.getElementById('editSingle').checked = single;
+    window.toggleEditDateMode();
+
+    window.editSetPerson(t.person === 'Both' ? 'Both' : t.person);
+    document.getElementById('editError').classList.remove('show');
+    refreshEditSub();
+
+    document.getElementById('editOverlay').classList.add('show');
+    setTimeout(() => document.getElementById('editStart').focus(), 30);
+};
+
+window.closeEdit = function() {
+    editingId = null;
+    document.getElementById('editOverlay').classList.remove('show');
+};
+
+window.overlayClick = function(e) {
+    if (e.target.id === 'editOverlay') window.closeEdit();
+};
+
+window.editSetPerson = function(p) {
+    editPerson = p;
+    document.getElementById('editBtnRyan').className   = 'person-btn' + (p === 'Ryan'   ? ' active-ryan'   : '');
+    document.getElementById('editBtnHannah').className = 'person-btn' + (p === 'Hannah' ? ' active-hannah' : '');
+    document.getElementById('editBtnBoth').className   = 'person-btn' + (p === 'Both'   ? ' active-both'   : '');
+};
+
+window.toggleEditDateMode = function() {
+    const single = document.getElementById('editSingle').checked;
+    document.getElementById('editEndGroup').style.display = single ? 'none' : '';
+    document.getElementById('editStartLabel').textContent = single ? 'Date' : 'Start date';
+    document.getElementById('nudgeRow').style.display = 'flex';
+    refreshEditSub();
+};
+
+// Move the whole trip forward/back, keeping its length
+window.shiftTrip = function(n) {
+    const startEl = document.getElementById('editStart');
+    const endEl   = document.getElementById('editEnd');
+    if (!startEl.value) return;
+    startEl.value = addDays(startEl.value, n);
+    if (endEl.value) endEl.value = addDays(endEl.value, n);
+    refreshEditSub();
+};
+
+// Live "Sep 5 – Sep 7 · 3 days" readout under the modal title
+window.refreshEditSub = function() {
+    const start  = document.getElementById('editStart').value;
+    const single = document.getElementById('editSingle').checked;
+    const end    = single ? start : document.getElementById('editEnd').value;
+    const sub    = document.getElementById('editSub');
+    if (!start || !end || end < start) { sub.textContent = ''; return; }
+    const dur = daysBetween(localDate(start), localDate(end));
+    sub.textContent = single || start === end
+        ? `${fmt(start)} · 1 day`
+        : `${fmt(start)} – ${fmt(end)} · ${dur} days`;
+};
+
+window.saveEdit = async function() {
+    if (!editingId) return;
+    const id     = editingId;
+    const loc    = document.getElementById('editLocation').value.trim();
+    const start  = document.getElementById('editStart').value;
+    const single = document.getElementById('editSingle').checked;
+    const end    = single ? start : document.getElementById('editEnd').value;
+
+    const bad = !loc || !start || (!single && !end) || (end < start);
+    document.getElementById('editError').classList.toggle('show', bad);
+    if (bad) return;
+
+    try {
+        await updateDoc(doc(db, 'trips', id), {
+            person: editPerson, location: loc, start, end, isSingle: single
+        });
+        window.closeEdit();
+        showToast('Trip updated.', false);
+    } catch(e) { showToast('Changes didn\u2019t save. Try again.', false); console.error(e); }
+};
+
+window.deleteFromModal = function() {
+    const id = editingId;
+    window.closeEdit();
+    if (id) window.deleteTrip(id);
+};
+
+document.addEventListener('keydown', e => {
+    if (!document.getElementById('editOverlay').classList.contains('show')) return;
+    if (e.key === 'Escape') window.closeEdit();
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT') window.saveEdit();
+});
+
 // ── Render: stats ──────────────────────────────────────────────────────
 function renderStats() {
     const { ryanDays, hannahDays } = getOverlapDays();
-    // Joint trips count toward both
     const ryanTrips   = trips.filter(t => t.person === 'Ryan' || t.person === 'Both').length;
     const hannahTrips = trips.filter(t => t.person === 'Hannah' || t.person === 'Both').length;
 
@@ -451,10 +632,10 @@ function renderStats() {
         const du    = daysUntil(next.start);
         const color = next.person === 'Ryan' ? 'var(--blue)' : next.person === 'Hannah' ? 'var(--pink)' : 'var(--purple)';
         nextHtml = `<div class="stat-value" style="color:${color};font-size:20px;line-height:1.2">${du === 0 ? 'Today' : du + 'd'}</div>`;
-        nextSub  = `${next.person} · ${next.location}`;
+        nextSub  = `${next.person === 'Both' ? 'Joint' : esc(next.person)} · ${esc(next.location)}`;
     } else {
         nextHtml = `<div class="stat-value" style="color:var(--text-3);font-size:20px">—</div>`;
-        nextSub  = 'No upcoming trips';
+        nextSub  = 'Nothing booked';
     }
 
     document.getElementById('statsStrip').innerHTML = `
@@ -478,45 +659,54 @@ function renderTripList() {
     const list  = document.getElementById('tripList');
     const count = document.getElementById('historyCount');
     if (!trips.length) {
-        list.innerHTML = '<div class="empty-state">No trips logged yet.</div>';
+        list.innerHTML = '<div class="empty-state">Log your first trip to see it here.</div>';
         count.textContent = ''; return;
     }
     count.textContent = trips.length + ' total';
     const sorted = [...trips].sort((a,b) => new Date(b.start) - new Date(a.start));
     list.innerHTML = sorted.map(t => {
-        const dur     = daysBetween(localDate(t.start), localDate(t.end));
-        const cls     = t.person === 'Both' ? 'both' : t.person.toLowerCase();
-        const label   = t.person === 'Both' ? 'Joint' : t.person;
+        const dur   = daysBetween(localDate(t.start), localDate(t.end));
+        const cls   = t.person === 'Both' ? 'both' : t.person.toLowerCase();
+        const label = t.person === 'Both' ? 'Joint' : t.person;
         return `
-            <div class="trip-item">
+            <div class="trip-item" onclick="openEdit('${t.id}')" title="Click to edit">
                 <div class="trip-item-bar ${cls}"></div>
                 <div class="trip-item-info">
                     <div class="trip-item-person ${cls}">${label}</div>
-                    <div class="trip-item-loc">${t.location}</div>
+                    <div class="trip-item-loc">${esc(t.location)}</div>
                     <div class="trip-item-dates">${fmt(t.start)}${t.isSingle ? '' : ' – ' + fmt(t.end)} · ${dur}d</div>
                 </div>
-                <button class="trip-delete" onclick="deleteTrip('${t.id}')">&times;</button>
+                <button class="trip-delete" onclick="event.stopPropagation();deleteTrip('${t.id}')" aria-label="Delete trip">&times;</button>
             </div>`;
     }).join('');
 }
 
 // ── Render: calendar ───────────────────────────────────────────────────
+// One clickable pill = one trip. Clicking opens the edit modal.
+function pillHtml(t, cls, prefix = '', extraStyle = '') {
+    return `<div class="pill ${cls} editable" role="button" tabindex="0" style="${extraStyle}"
+        title="Click to edit dates"
+        onclick="openEdit('${t.id}')"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEdit('${t.id}')}"
+        >${prefix}${esc(t.location)}</div>`;
+}
+
 function renderCalendar() {
     const grid  = document.getElementById('calendarDays');
     const label = document.getElementById('monthDisplay');
     const DOW   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     grid.innerHTML = DOW.map(d => `<div class="cal-dow">${d}</div>`).join('');
 
-    const year       = viewDate.getFullYear();
-    const month      = viewDate.getMonth();
-    const firstDay   = new Date(year, month, 1).getDay();
+    const year        = viewDate.getFullYear();
+    const month       = viewDate.getMonth();
+    const firstDay    = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     label.textContent = viewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
     const { ryanDays, hannahDays } = getOverlapDays();
+    const parsed = trips.map(parseTrip);
 
-    // Empty leading cells
     for (let i = 0; i < firstDay; i++) {
         const el = document.createElement('div');
         el.className = 'cal-day empty';
@@ -526,20 +716,15 @@ function renderCalendar() {
     const totalRows = Math.ceil((firstDay + daysInMonth) / 7);
 
     for (let d = 1; d <= daysInMonth; d++) {
-        // FIX: construct cell date from local y/m/d — eliminates the UTC-shift off-by-one
         const cellDate = new Date(year, month, d);
         const key      = toKey(year, month, d);
         const isToday  = cellDate.getTime() === TODAY.getTime();
-        const cellRow  = Math.ceil((firstDay + d) / 7); // which row this day is in
+        const cellRow  = Math.ceil((firstDay + d) / 7);
 
         const hasRyan   = ryanDays.has(key);
         const hasHannah = hannahDays.has(key);
 
-        // FIX: compare cellDate (local midnight) against parsed trip dates (local midnight)
-        // so first and last days of trips render correctly
-        const active = trips.map(parseTrip).filter(t =>
-            cellDate >= t.startDate && cellDate <= t.endDate
-        );
+        const active = parsed.filter(t => cellDate >= t.startDate && cellDate <= t.endDate);
 
         let cls = 'cal-day';
         if (isToday)              cls += ' today';
@@ -548,23 +733,20 @@ function renderCalendar() {
         let pillsHtml = '';
         const jointTrips = active.filter(t => t.person === 'Both');
         if (jointTrips.length) {
-            jointTrips.forEach(t => {
-                pillsHtml += `<div class="pill both">✦ ${t.location}</div>`;
-            });
-            // Also show any non-joint trips on same day
+            jointTrips.forEach(t => { pillsHtml += pillHtml(t, 'both', '✦ '); });
             active.filter(t => t.person !== 'Both').forEach(t => {
-                pillsHtml += `<div class="pill ${t.person === 'Ryan' ? 'ryan' : 'hannah'}">${t.location}</div>`;
+                pillsHtml += pillHtml(t, t.person === 'Ryan' ? 'ryan' : 'hannah');
             });
         } else if (hasRyan && hasHannah) {
-            const rLoc = active.find(t => t.person === 'Ryan')?.location   || '';
-            const hLoc = active.find(t => t.person === 'Hannah')?.location || '';
             pillsHtml = `<div class="pill overlap">Both away</div>`;
-            if (rLoc !== hLoc) pillsHtml += `
-                <div class="pill ryan" style="font-size:9px;opacity:.8">${rLoc}</div>
-                <div class="pill hannah" style="font-size:9px;opacity:.8">${hLoc}</div>`;
+            const r = active.find(t => t.person === 'Ryan');
+            const h = active.find(t => t.person === 'Hannah');
+            // Always render both, so each trip stays individually clickable
+            if (r) pillsHtml += pillHtml(r, 'ryan',   '', 'font-size:9px;opacity:.85');
+            if (h) pillsHtml += pillHtml(h, 'hannah', '', 'font-size:9px;opacity:.85');
         } else {
             active.forEach(t => {
-                pillsHtml += `<div class="pill ${t.person === 'Ryan' ? 'ryan' : 'hannah'}">${t.isSingle ? '· ' : ''}${t.location}</div>`;
+                pillsHtml += pillHtml(t, t.person === 'Ryan' ? 'ryan' : 'hannah', t.isSingle ? '· ' : '');
             });
         }
 
@@ -574,16 +756,16 @@ function renderCalendar() {
         if (active.length) {
             popupHtml = `<div class="day-popup${flipUp ? ' flip-up' : ''}"><div class="popup-date">${fmtFull(key)}</div>`;
             active.forEach(t => {
-                const c = t.person === 'Both' ? 'both' : t.person.toLowerCase();
+                const c     = t.person === 'Both' ? 'both' : t.person.toLowerCase();
                 const label = t.person === 'Both' ? 'Joint trip' : t.person;
                 popupHtml += `
-                    <div class="popup-trip ${c}">
+                    <div class="popup-trip ${c}" onclick="openEdit('${t.id}')">
                         <div class="popup-trip-person ${c}">${label}</div>
-                        <div class="popup-trip-loc">${t.location}</div>
+                        <div class="popup-trip-loc">${esc(t.location)}</div>
                         <div class="popup-trip-dates">${fmt(t.start)}${t.isSingle ? '' : ' – ' + fmt(t.end)}</div>
                     </div>`;
             });
-            popupHtml += '</div>';
+            popupHtml += `<div class="popup-edit-hint">Click a trip to edit it</div></div>`;
         }
 
         const cell = document.createElement('div');
@@ -596,14 +778,17 @@ function renderCalendar() {
 function renderAll() { renderStats(); renderTripList(); renderCalendar(); }
 
 // ── Init ───────────────────────────────────────────────────────────────
-const todayStr = TODAY.toISOString().slice(0,10);
+const todayStr = dateToKey(TODAY);
 document.getElementById('tripStart').value       = todayStr;
 document.getElementById('tripEnd').value         = todayStr;
 document.getElementById('undoBtn').style.display = 'none';
+document.getElementById('legendToday').textContent = TODAY.getDate();
 
 // Real-time Firestore listener — updates all views instantly for both users
 onSnapshot(collection(db, 'trips'), snapshot => {
     trips = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    // If the trip open in the modal was deleted elsewhere, close the modal
+    if (editingId && !trips.some(t => t.id === editingId)) window.closeEdit();
     renderAll();
 });
 </script>
